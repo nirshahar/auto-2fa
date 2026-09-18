@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.rememberWindowState
@@ -20,7 +21,7 @@ import androidx.compose.ui.window.rememberWindowState
 /** A small always-on-top popup shown for one incoming OTP code, with a copy-to-clipboard action. */
 @Composable
 fun OtpNotificationWindow(code: String, onDismiss: () -> Unit) {
-    val windowState = rememberWindowState(width = 320.dp, height = 180.dp)
+    val windowState = rememberWindowState(size = DpSize.Unspecified)
 
     Window(
         onCloseRequest = onDismiss,
