@@ -56,6 +56,13 @@ kotlin {
         jvmMain.dependencies {
             implementation(libs.ktor)
             implementation(libs.ktor.netty)
+            implementation(libs.ktor.server.contentNegotiation)
+            implementation(libs.ktor.serialization.kotlinxJson)
+            // Netty (via Ktor) logs through SLF4J; without a provider on the runtime classpath
+            // it silently no-ops and prints a one-time warning. slf4j-simple just logs to stderr.
+            runtimeOnly(libs.slf4j.simple)
+            // The JDK has no public API for building a self-signed X.509 certificate; BC does.
+            implementation(libs.bouncycastle.bcpkix)
         }
         jvmMain.get().dependsOn(jvmAndroidMain)
     }

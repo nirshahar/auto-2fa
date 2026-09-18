@@ -37,19 +37,21 @@ class SmsReceiver : BroadcastReceiver() {
                         continue
                     }
 
-                    if (settings.serverIp.isBlank() || settings.publicKeyBase64.isBlank()) {
-                        Log.w("SMS_LOG", "Server IP or public key not configured yet, dropping code from $sender")
+                    if (settings.serverIp.isBlank() || settings.publicKeyBase64.isBlank() ||
+                        settings.tlsCertificateBase64.isBlank()
+                    ) {
+                        Log.w("SMS_LOG", "Server IP, public key, or TLS certificate not configured yet, dropping code from $sender")
                         continue
                     }
 
                     val encryptedCode = RsaCrypto.encrypt(settings.publicKeyBase64, code)
-                    val client = OtpPushClient(settings.serverIp, settings.serverPort)
+                    val client = OtpPushClient(settings.serverIp, settings.tlsCertificateBase64)
 
                     try {
                         client.pushOtp(OtpPushRequest(code = encryptedCode))
-                        Log.d("SMS_LOG", "Pushed OTP from $sender to ${settings.serverIp}:${settings.serverPort}")
+                        Log.d("SMS_LOG", "Pushed OTP from $sender to ${settings.serverIp}:$AUTO2FA_SERVER_PORT")
                     } catch (e: Exception) {
-                        Log.e("SMS_LOG", "Failed to push OTP to ${settings.serverIp}:${settings.serverPort}", e)
+                        Log.e("SMS_LOG", "Failed to push OTP to ${settings.serverIp}:$AUTO2FA_SERVER_PORT", e)
                     }
                 }
             } catch (e: Exception) {

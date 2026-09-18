@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -27,7 +26,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -42,14 +40,14 @@ fun SettingsScreen() {
     val savedMessage = stringResource(R.string.settings_saved_message)
 
     var serverIp by remember { mutableStateOf("") }
-    var serverPort by remember { mutableStateOf("8080") }
     var publicKey by remember { mutableStateOf("") }
+    var tlsCertificate by remember { mutableStateOf("") }
 
     LaunchedEffect(Unit) {
         val settings = repository.settings.first()
         serverIp = settings.serverIp
-        serverPort = settings.serverPort.toString()
         publicKey = settings.publicKeyBase64
+        tlsCertificate = settings.tlsCertificateBase64
     }
 
     Scaffold(
@@ -60,17 +58,17 @@ fun SettingsScreen() {
             modifier = Modifier.padding(innerPadding),
             serverIp = serverIp,
             onServerIpChange = { serverIp = it },
-            serverPort = serverPort,
-            onServerPortChange = { serverPort = it },
             publicKey = publicKey,
             onPublicKeyChange = { publicKey = it },
+            tlsCertificate = tlsCertificate,
+            onTlsCertificateChange = { tlsCertificate = it },
             onSave = {
                 scope.launch {
                     repository.save(
                         Settings(
                             serverIp = serverIp.trim(),
-                            serverPort = serverPort.toIntOrNull() ?: 8080,
                             publicKeyBase64 = publicKey.trim(),
+                            tlsCertificateBase64 = tlsCertificate.trim(),
                         )
                     )
                     snackbarHostState.showSnackbar(savedMessage)
@@ -84,10 +82,10 @@ fun SettingsScreen() {
 private fun SettingsForm(
     serverIp: String,
     onServerIpChange: (String) -> Unit,
-    serverPort: String,
-    onServerPortChange: (String) -> Unit,
     publicKey: String,
     onPublicKeyChange: (String) -> Unit,
+    tlsCertificate: String,
+    onTlsCertificateChange: (String) -> Unit,
     onSave: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -103,8 +101,8 @@ private fun SettingsForm(
             style = MaterialTheme.typography.bodyMedium,
         )
         ServerIpField(value = serverIp, onValueChange = onServerIpChange)
-        ServerPortField(value = serverPort, onValueChange = onServerPortChange)
         PublicKeyField(value = publicKey, onValueChange = onPublicKeyChange)
+        TlsCertificateField(value = tlsCertificate, onValueChange = onTlsCertificateChange)
         SaveButton(onClick = onSave)
     }
 }
@@ -121,23 +119,23 @@ private fun ServerIpField(value: String, onValueChange: (String) -> Unit) {
 }
 
 @Composable
-private fun ServerPortField(value: String, onValueChange: (String) -> Unit) {
-    OutlinedTextField(
-        value = value,
-        onValueChange = { input -> if (input.all(Char::isDigit)) onValueChange(input) },
-        label = { Text(stringResource(R.string.settings_server_port_label)) },
-        singleLine = true,
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-        modifier = Modifier.fillMaxWidth(),
-    )
-}
-
-@Composable
 private fun PublicKeyField(value: String, onValueChange: (String) -> Unit) {
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
         label = { Text(stringResource(R.string.settings_public_key_label)) },
+        minLines = 4,
+        maxLines = 8,
+        modifier = Modifier.fillMaxWidth(),
+    )
+}
+
+@Composable
+private fun TlsCertificateField(value: String, onValueChange: (String) -> Unit) {
+    OutlinedTextField(
+        value = value,
+        onValueChange = onValueChange,
+        label = { Text(stringResource(R.string.settings_tls_certificate_label)) },
         minLines = 4,
         maxLines = 8,
         modifier = Modifier.fillMaxWidth(),
