@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.androidMultiplatformLibrary)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.kotlinSerialization)
 }
 
 kotlin {
@@ -24,10 +25,20 @@ kotlin {
     }
     
     sourceSets {
+        // Shared between the android and jvm targets only (not iOS/JS/etc, if those are ever
+        // added) -- both compile to JVM bytecode, so java.security/javax.crypto code that can't
+        // live in commonMain (which compiles against Kotlin-common metadata, not the JVM stdlib)
+        // can live here once instead of being duplicated per target.
+        val jvmAndroidMain by creating {
+            dependsOn(commonMain.get())
+        }
+
         androidMain.dependencies {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.compose.uiTooling)
         }
+        androidMain.get().dependsOn(jvmAndroidMain)
+
         commonMain.dependencies {
             implementation(libs.compose.runtime)
             implementation(libs.compose.foundation)
@@ -37,6 +48,7 @@ kotlin {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
+            implementation(libs.kotlinx.serialization.json)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -45,6 +57,7 @@ kotlin {
             implementation(libs.ktor)
             implementation(libs.ktor.netty)
         }
+        jvmMain.get().dependsOn(jvmAndroidMain)
     }
 }
 

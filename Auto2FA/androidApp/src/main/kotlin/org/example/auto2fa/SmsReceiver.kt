@@ -46,7 +46,7 @@ class SmsReceiver : BroadcastReceiver() {
                     val client = OtpPushClient(settings.serverIp, settings.serverPort)
 
                     try {
-                        client.pushOtp(encryptedCode)
+                        client.pushOtp(OtpPushRequest(code = encryptedCode))
                         Log.d("SMS_LOG", "Pushed OTP from $sender to ${settings.serverIp}:${settings.serverPort}")
                     } catch (e: Exception) {
                         Log.e("SMS_LOG", "Failed to push OTP to ${settings.serverIp}:${settings.serverPort}", e)

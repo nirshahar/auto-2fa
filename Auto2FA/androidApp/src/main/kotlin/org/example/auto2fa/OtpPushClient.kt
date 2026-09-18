@@ -9,10 +9,6 @@ import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
-import kotlinx.serialization.Serializable
-
-@Serializable
-private data class OtpPushRequest(val code: String)
 
 /**
  * Client for the desktop app's HTTP API, bound to a specific host/port. Callers interact with
@@ -22,10 +18,10 @@ private data class OtpPushRequest(val code: String)
 class OtpPushClient(private val host: String, private val port: Int) : ServerApi {
     private val baseUrl = "http://$host:$port"
 
-    override suspend fun pushOtp(encryptedCode: String) {
+    override suspend fun pushOtp(request: OtpPushRequest) {
         httpClient.post("$baseUrl/push") {
             contentType(ContentType.Application.Json)
-            setBody(OtpPushRequest(code = encryptedCode))
+            setBody(request)
         }
     }
 
