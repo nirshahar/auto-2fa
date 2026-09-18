@@ -6,22 +6,16 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-
-@Composable
-fun Greeting(name: String?, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+import auto2fa.shared.generated.resources.Res
+import auto2fa.shared.generated.resources.need_permissions_message
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun NeedPermissionContent() {
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-        Greeting(
-            name = "Need permissions!",
+        Text(
+            text = stringResource(Res.string.need_permissions_message),
             modifier = Modifier.padding(innerPadding)
         )
     }
 }
-

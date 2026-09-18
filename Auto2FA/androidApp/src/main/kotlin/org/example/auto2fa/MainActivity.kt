@@ -7,13 +7,13 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 
 class MainActivity : ComponentActivity() {
@@ -22,24 +22,19 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            App()
+            Auto2FAApp()
         }
     }
 }
 
 @Preview
 @Composable
-fun AppAndroidPreview() {
-    App()
+fun Auto2FAAppPreview() {
+    Auto2FAApp()
 }
 
 @Composable
-fun AppContent() {
-    Greeting("android")
-}
-
-@Composable
-fun App() {
+fun Auto2FAApp() {
     var isGranted by remember { mutableStateOf(false) }
 
     val launcher = rememberLauncherForActivityResult(
@@ -48,15 +43,15 @@ fun App() {
         isGranted = it
     }
 
-    LaunchedEffect(isGranted) {
-        if (!isGranted) {
-            launcher.launch(Manifest.permission.RECEIVE_SMS)
-        }
+    LaunchedEffect(Unit) {
+        launcher.launch(Manifest.permission.RECEIVE_SMS)
     }
 
-    if (isGranted) {
-        AppContent()
-    } else {
-        NeedPermissionContent()
+    MaterialTheme {
+        if (isGranted) {
+            SettingsScreen()
+        } else {
+            NeedPermissionContent()
+        }
     }
 }

@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">Auto2FA</string>
+
+    <string name="settings_title">Auto2FA Settings</string>
+    <string name="settings_description">Configure the desktop app this device sends two-factor codes to.</string>
+    <string name="settings_server_ip_label">Server IP</string>
+    <string name="settings_server_port_label">Server Port</string>
+    <string name="settings_public_key_label">Desktop Public Key</string>
+    <string name="settings_save_button">Save</string>
+    <string name="settings_saved_message">Settings saved</string>
 </resources>
