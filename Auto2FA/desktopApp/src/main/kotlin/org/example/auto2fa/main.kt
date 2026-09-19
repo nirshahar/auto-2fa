@@ -28,6 +28,8 @@ private data class PendingOtp(val id: Long, val code: String)
 private val MIN_WINDOW_SIZE = Dimension(480, 700)
 
 fun main() {
+    WindowsAutostart.ensureRegistered()
+
     val keys = DesktopKeyStore.loadOrCreate()
     val pendingOtps = mutableStateListOf<PendingOtp>()
     val nextId = AtomicLong(0)
