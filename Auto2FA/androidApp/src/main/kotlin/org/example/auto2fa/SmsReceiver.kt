@@ -18,6 +18,7 @@ class SmsReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action != Telephony.Sms.Intents.SMS_RECEIVED_ACTION) return
+        Log.wtf("EEEEEEEEEEE", "test")
 
         val messages = Telephony.Sms.Intents.getMessagesFromIntent(intent)
         val appContext = context.applicationContext
@@ -49,13 +50,13 @@ class SmsReceiver : BroadcastReceiver() {
 
                     try {
                         client.pushOtp(OtpPushRequest(code = encryptedCode))
-                        Log.d("SMS_LOG", "Pushed OTP from $sender to ${settings.serverIp}:$AUTO2FA_SERVER_PORT")
+                        Log.wtf("SMS_LOG", "Pushed OTP from $sender to ${settings.serverIp}:$AUTO2FA_SERVER_PORT")
                     } catch (e: Exception) {
                         Log.e("SMS_LOG", "Failed to push OTP to ${settings.serverIp}:$AUTO2FA_SERVER_PORT", e)
                     }
                 }
             } catch (e: Exception) {
-                Log.e("SMS_LOG", "Failed to process incoming SMS", e)
+                Log.wtf("SMS_LOG", "Failed to process incoming SMS", e)
             } finally {
                 pendingResult.finish()
             }

@@ -2,9 +2,13 @@
 .kotlin
 .gradle
 **/build/
+/builtPackages/
 xcuserdata
 !src/**/build/
 local.properties
+androidApp/keystore.properties
+androidApp/*.keystore
+androidApp/*.jks
 .idea
 .DS_Store
 captures

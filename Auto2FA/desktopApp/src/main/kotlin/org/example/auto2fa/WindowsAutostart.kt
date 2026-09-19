@@ -19,6 +19,14 @@ object WindowsAutostart {
     private const val VALUE_NAME = "Auto2FA"
 
     /**
+     * Passed as a launch argument only on the Run-key-triggered launch (registered below), so
+     * `main()` can tell "Windows started this at login" apart from any other launch (Start Menu,
+     * taskbar search, double-clicking the exe, the tray) and default the Settings window to
+     * hidden only for the former.
+     */
+    const val AUTOSTART_ARG = "--autostart"
+
+    /**
      * No-op unless both:
      *  - running on Windows, and
      *  - running as the actual installed jpackage launcher -- `jpackage.app-path` is a system
@@ -37,7 +45,7 @@ object WindowsAutostart {
                 "reg", "add", RUN_KEY,
                 "/v", VALUE_NAME,
                 "/t", "REG_SZ",
-                "/d", "\"$exePath\"",
+                "/d", "\"$exePath\" $AUTOSTART_ARG",
                 "/f",
             ).start().waitFor()
         } catch (_: Exception) {

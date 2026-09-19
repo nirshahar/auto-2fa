@@ -4,7 +4,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.graphics.painter.Painter
@@ -27,7 +26,19 @@ private data class PendingOtp(val id: Long, val code: String)
 // visible without the user having to resize the window manually.
 private val MIN_WINDOW_SIZE = Dimension(480, 700)
 
-fun main() {
+fun main(args: Array<String>) {
+    // Hidden only for the launch Windows itself triggers at login (see AUTOSTART_ARG) -- any
+    // other launch (Start Menu, taskbar search, double-clicking the exe, `gradlew run`) still
+    // opens the window as before.
+    val windowVisibleState = mutableStateOf(!args.contains(WindowsAutostart.AUTOSTART_ARG))
+
+    // Must happen before anything else starts (key generation, the server, the tray) -- if
+    // another instance is already running, this call has already asked *it* to show its window,
+    // and this process has nothing left to do but exit without disturbing that instance.
+    if (!SingleInstance.tryAcquireOrNotifyExisting(onShowRequested = { windowVisibleState.value = true })) {
+        return
+    }
+
     WindowsAutostart.ensureRegistered()
 
     val keys = DesktopKeyStore.loadOrCreate()
@@ -49,7 +60,7 @@ fun main() {
         // Closing the settings window only hides it (see onCloseRequest below) -- the tray icon
         // is what keeps the process, and therefore the server, alive. Only "Quit" in the tray
         // menu calls exitApplication().
-        var isWindowVisible by remember { mutableStateOf(true) }
+        var isWindowVisible by windowVisibleState
 
         // Note: on Windows, onAction only fires on a double-click of the icon once a popup menu
         // is attached (a java.awt.TrayIcon quirk under the hood) -- a single left-click does
