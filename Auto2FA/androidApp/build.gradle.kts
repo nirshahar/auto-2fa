@@ -29,6 +29,10 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.androidx.datastore.preferences)
+    implementation(libs.play.services.auth.api.phone)
+    // play-services-auth-api-phone transitively pulls androidx.fragment:1.1.0, which is below
+    // what androidx.activity's Activity Result APIs (used by SmsConsentActivity) require (1.3.0+).
+    implementation(libs.androidx.fragment)
 
     implementation(libs.compose.runtime)
     implementation(libs.compose.foundation)

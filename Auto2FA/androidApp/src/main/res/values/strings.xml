@@ -8,4 +8,12 @@
     <string name="settings_tls_certificate_label">Desktop TLS Certificate</string>
     <string name="settings_save_button">Save</string>
     <string name="settings_saved_message">Settings saved</string>
+
+    <string name="otp_listener_channel_name">One-time code listener</string>
+    <string name="otp_listener_notification_title">Auto2FA</string>
+    <string name="otp_listener_notification_text">Watching for incoming one-time codes</string>
+
+    <string name="otp_prompt_channel_name">One-time code prompt</string>
+    <string name="otp_prompt_notification_title">One-time code detected</string>
+    <string name="otp_prompt_notification_text">Tap to allow Auto2FA to read it</string>
 </resources>
